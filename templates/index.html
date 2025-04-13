@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Analysis Tool</title>
+    <style>
+        body { font-family: Arial; margin: 2rem; background: #f0f0f0; }
+        h1 { color: #333; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc; margin-bottom: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #eee; }
+    </style>
+</head>
+<body>
+    <h1> Log Analysis Tool</h1>
+    <form method="POST" enctype="multipart/form-data" class="box">
+        <label>Select a log file (first 2000 lines will be analyzed):</label><br><br>
+        <input type="file" name="logfile" required>
+        <br><br>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if results %}
+        <div class="box">
+            <h2>🔢 Requests Per Status Code</h2>
+            <table>
+                <tr><th>Status Code</th><th>Count</th></tr>
+                {% for code, count in results.status_codes.items() %}
+                    <tr><td>{{ code }}</td><td>{{ count }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="box">
+            <h2>🔥 Top 5 Requested URLs</h2>
+            <table>
+                <tr><th>URL</th><th>Requests</th></tr>
+                {% for url, count in results.top_urls %}
+                    <tr><td>{{ url }}</td><td>{{ count }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="box">
+            <h2>⏱ Average Response Time</h2>
+            <p>{{ results.avg_response_time or "No response time found." }} ms</p>
+        </div>
+    {% endif %}
+</body>
+</html>
